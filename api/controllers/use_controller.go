@@ -12,22 +12,22 @@ import (
 	"gorm.io/gorm"
 )
 
-// UserController data type
-type UserController struct {
-	service services.UserService
+// UseController data type
+type UseController struct {
+	service services.UseService
 	logger  lib.Logger
 }
 
-// NewUserController creates new user controller
-func NewUserController(userService services.UserService, logger lib.Logger) UserController {
-	return UserController{
-		service: userService,
+// NewUseController creates new use controller
+func NewUseController(useService services.UseService, logger lib.Logger) UseController {
+	return UseController{
+		service: useService,
 		logger:  logger,
 	}
 }
 
-// GetOneUser gets one user
-func (u UserController) GetOneUser(c *gin.Context) {
+// GetOneUse gets one use
+func (u UseController) GetOneUse(c *gin.Context) {
 	paramID := c.Param("id")
 
 	id, err := strconv.Atoi(paramID)
@@ -38,7 +38,7 @@ func (u UserController) GetOneUser(c *gin.Context) {
 		})
 		return
 	}
-	user, err := u.service.GetOneUser(uint(id))
+	use, err := u.service.GetOneUse(uint(id))
 
 	if err != nil {
 		u.logger.Zap.Error(err)
@@ -49,26 +49,26 @@ func (u UserController) GetOneUser(c *gin.Context) {
 	}
 
 	c.JSON(200, gin.H{
-		"data": user,
+		"data": use,
 	})
 
 }
 
-// GetUser gets the user
-func (u UserController) GetUser(c *gin.Context) {
-	users, err := u.service.GetAllUser()
+// GetUse gets the use
+func (u UseController) GetUse(c *gin.Context) {
+	uses, err := u.service.GetAllUse()
 	if err != nil {
 		u.logger.Zap.Error(err)
 	}
-	c.JSON(200, gin.H{"data": users})
+	c.JSON(200, gin.H{"data": uses})
 }
 
-// SaveUser saves the user
-func (u UserController) SaveUser(c *gin.Context) {
-	user := models.User{}
+// SaveUse saves the use
+func (u UseController) SaveUse(c *gin.Context) {
+	use := models.User{}
 	trxHandle := c.MustGet(constants.DBTransaction).(*gorm.DB)
 
-	if err := c.ShouldBindJSON(&user); err != nil {
+	if err := c.ShouldBindJSON(&use); err != nil {
 		u.logger.Zap.Error(err)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
@@ -76,7 +76,7 @@ func (u UserController) SaveUser(c *gin.Context) {
 		return
 	}
 
-	if err := u.service.WithTrx(trxHandle).CreateUser(user); err != nil {
+	if err := u.service.WithTrxUse(trxHandle).CreateUse(use); err != nil {
 		u.logger.Zap.Error(err)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
@@ -84,16 +84,16 @@ func (u UserController) SaveUser(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, gin.H{"data": "user created"})
+	c.JSON(200, gin.H{"data": "use created"})
 }
 
-// UpdateUser updates user
-func (u UserController) UpdateUser(c *gin.Context) {
-	c.JSON(200, gin.H{"data": "user updated"})
+// UpdateUse updates use
+func (u UseController) UpdateUse(c *gin.Context) {
+	c.JSON(200, gin.H{"data": "use updated"})
 }
 
-// DeleteUser deletes user
-func (u UserController) DeleteUser(c *gin.Context) {
+// DeleteUse deletes use
+func (u UseController) DeleteUse(c *gin.Context) {
 	paramID := c.Param("id")
 
 	id, err := strconv.Atoi(paramID)
@@ -105,7 +105,7 @@ func (u UserController) DeleteUser(c *gin.Context) {
 		return
 	}
 
-	if err := u.service.DeleteUser(uint(id)); err != nil {
+	if err := u.service.DeleteUse(uint(id)); err != nil {
 		u.logger.Zap.Error(err)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
@@ -113,5 +113,5 @@ func (u UserController) DeleteUser(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, gin.H{"data": "user deleted"})
+	c.JSON(200, gin.H{"data": "use deleted"})
 }

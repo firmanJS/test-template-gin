@@ -6,13 +6,13 @@ import (
 )
 
 // UserRepository database structure
-type UserRepository struct {
+type UseRepository struct {
 	lib.Database
 	logger lib.Logger
 }
 
 // NewUserRepository creates a new user repository
-func NewUserRepository(db lib.Database, logger lib.Logger) UserRepository {
+func NewUseRepository(db lib.Database, logger lib.Logger) UserRepository {
 	return UserRepository{
 		Database: db,
 		logger:   logger,
@@ -20,7 +20,7 @@ func NewUserRepository(db lib.Database, logger lib.Logger) UserRepository {
 }
 
 // WithTrx enables repository with transaction
-func (r UserRepository) WithTrx(trxHandle *gorm.DB) UserRepository {
+func (r UserRepository) WithTrxUse(trxHandle *gorm.DB) UserRepository {
 	if trxHandle == nil {
 		r.logger.Zap.Error("Transaction Database not found in gin context. ")
 		return r
